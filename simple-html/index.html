@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>OTP </title>
+  <script src="https://sdk.accountkit.com/en_US/sdk.js"></script>
+</head>
+
+<body>
+  test
+  <input value="+62" id="country_code" />
+  <input placeholder="phone number" id="phone_number" />
+  <button onclick="smsLogin();">Login via SMS</button>
+  <div>OR</div>
+  <input placeholder="email" id="email" />
+  <button onclick="emailLogin();">Login via Email</button>
+
+  <script>
+    const account_kit_api_version = 'v1.1';
+    const app_id = '736219796836405';
+    const app_secret = '2e5f4edaa138588a3e0747bb5bf966ab';
+    const me_endpoint_base_url = 'https://graph.accountkit.com/v1.1/me';
+    const token_exchange_base_url = 'https://graph.accountkit.com/v1.1/access_token';
+    // initialize Account Kit with CSRF protection
+    AccountKit_OnInteractive = function () {
+      AccountKit.init(
+        {
+          appId: '736219796836405',
+          state: 'state',
+          version: 'v1.1',
+          fbAppEventsEnabled: true,
+          redirect: 'localhost:5500/simple/',
+          debug: true
+        }
+      );
+    };
+
+    // login callback
+    function loginCallback(response) { 
+      console.log(response);
+      alert('callback');
+      if (response.status === "PARTIALLY_AUTHENTICATED") {
+        var code = response.code;
+        var csrf = response.state;
+        // Send code to server to exchange for access token
+        console.log('success authenticated');
+        alert('haha');
+      }
+      else if (response.status === "NOT_AUTHENTICATED") {
+        // handle authentication failure
+        console.log('failed authenticated');
+
+      }
+      else if (response.status === "BAD_PARAMS") {
+        console.log('bad params');
+      }
+    }
+
+    // phone form submission handler
+    function smsLogin() {
+      var countryCode = document.getElementById("country_code").value;
+      var phoneNumber = document.getElementById("phone_number").value;
+      console.log(countryCode + ' ' + phoneNumber);
+      AccountKit.login(
+        'PHONE',
+        { countryCode: countryCode, phoneNumber: phoneNumber }, // will use default values if not specified
+        loginCallback
+      );
+    }
+
+
+    // email form submission handler
+    function emailLogin() {
+      var emailAddress = document.getElementById("email").value;
+      AccountKit.login(
+        'EMAIL',
+        { emailAddress: emailAddress },
+        loginCallback
+      );
+    }
+  </script>
+
+
+</body>
+
+</html>

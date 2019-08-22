@@ -1,0 +1,60 @@
+<h1>{{title}}</h1>
+<p>Welcome to {{title}}</p>
+
+<input value="+1" id="country_code" />
+<input placeholder="phone number" id="phone_number" />
+<button onclick="smsLogin();">Login via SMS</button>
+
+
+<input placeholder="email" id="email" />
+<button onclick="emailLogin();">Login via Email</button>
+
+<form id="login_success" method="post" action="/login_success">
+  <input id="csrf" type="hidden" name="csrf" value="{{csfr}}" />
+  <input id="code" type="hidden" name="code" />
+</form>
+
+
+<script>
+  AccountKit_OnInteractive = function () {
+    AccountKit.init(
+      {
+        appId: "{{appId}}",
+        state: "{{csrf}}",
+        version: "{{version}}",
+        fbAppEventsEnabled: true,
+        debug: true
+      }
+    );
+  };
+
+  // email form submission handler
+  function emailLogin() {
+    var emailAddress = document.getElementById("email").value;
+    AccountKit.login(
+      'EMAIL',
+      { emailAddress: emailAddress },
+      loginCallback
+    );
+  }
+
+  function smsLogin() {
+    var countryCode = document.getElementById("country_code").value;
+    var phoneNumber = document.getElementById("phone_number").value;
+    AccountKit.login(
+      'PHONE',
+      { countryCode: countryCode, phoneNumber: phoneNumber }, // will use default values if not specified
+      loginCallback
+    );
+  }
+
+
+  function loginCallback(response) {
+    if (response.status === "PARTIALLY_AUTHENTICATED") {
+      document.getElementById("code").value = response.code;
+      document.getElementById("csrf").value = response.state;
+      document.getElementById("login_success").submit();
+    }
+  }
+
+</script>
