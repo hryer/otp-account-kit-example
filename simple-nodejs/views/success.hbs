@@ -6,3 +6,9 @@
 <div>User Id {{user_id}}</div>
 <div>User phone: {{phone_num}}</div>
 <div>User email: {{email_addr}}</div>
+
+<form id="logout" method="post" action="/logout">
+    <input type="text" name="access_token" id="access_token" value={{user_access_token}}>
+    <input type="text" name="account_id" id="account_id" value={{user_id}}>
+    <button type="submit">Logout</button>
+</form>
