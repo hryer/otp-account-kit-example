@@ -1,4 +1,4 @@
-## Facebook Account Kit Sample
+## otp-account-kit-example
 Simple implementation of the Account Kit from the [FB docs](https://developers.facebook.com/docs/accountkit/)
 
 ### How to run the sample? 
